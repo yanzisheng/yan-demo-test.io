@@ -1,10 +1,169 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js" lang="">
+
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>Cheetah-Chat</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			#chatgpt-response {
+				font-family: "等线";
+				font-size: 25px;
+				color: #0000FF;
+				font-weight: bold;
+			}
+		</style>
+		<!-- All CSS Files Here -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/et-line-fonts.css">
+		<link rel="stylesheet" href="css/ionicons.min.css">
+		<link rel="stylesheet" href="css/magnific-popup.css">
+		<link rel="stylesheet" href="css/meanmenu.css">
+		<link rel="stylesheet" href="css/global.css">
+		<link rel="stylesheet" href="css/main-style.css">
+		<link rel="stylesheet" href="css/responsive.css">
+		<!-- All JS Files Here -->
+		<script src="js/modernizr-2.8.3.min.js"></script>
+		<script src="js/jquery-1.12.0.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/isotope.pkgd.min.js"></script>
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="js/jquery.magnific-popup.min.js"></script>
+		<script src="js/jquery.meanmenu.js"></script>
+		<script src="js/plugins.js"></script>
+		<script src="js/main.js"></script>
+		
+		<script>
+			async function callCHATGPT() {
+				var responseText1 = document.getElementById("chatgpt-response");
+				responseText1.innerHTML = ""
+
+				function printMessage(message) {
+					var responseText = document.getElementById("chatgpt-response");
+					var index = 0;
+
+					// Create a timer to print one character every once in a while
+					var interval = setInterval(function() {
+							responseText.innerHTML += message[index];
+							index++;
+
+							// When printing is complete, clear the timer
+							if (index >= message.length) {
+								clearInterval(interval);
+							}
+						},
+						5); 
+						// 5ms
+				}
+				var xhr = new XMLHttpRequest();
+				var url = "https://api.openai.com/v1/chat/completions";
+				xhr.open("POST", url, true);
+				xhr.setRequestHeader("Content-Type", "application/json");
+				// Enter your authorization API information here
+				xhr.setRequestHeader("Authorization", "Bearer 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");
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						var json = JSON.parse(xhr.responseText);
+						var response = json.choices[0].message.content;
+						// OUTPUT THE RETURN VALUE OF CHATGPT TO THE TEXT BOX
+						var responseText = document.getElementById("chatgpt-response");
+						var index = 0;
+						// Create a timer to print one character every once in a while
+						var interval = setInterval(function() {
+								responseText.innerHTML += response[index];
+								index++;
+								// When printing is complete, clear the timer
+								if (index >= response.length) {
+									clearInterval(interval);
+								}
+							},
+							20); 
+							// 20ms
+					}
+				};
+				var prompt = document.getElementById("chat-gpt-input").value
+
+				var data = JSON.stringify({
+					"messages": [{
+						"role": "user",
+						"content": prompt
+					}],
+					"temperature": 0.5,
+					"top_p": 1,
+					"frequency_penalty": 0,
+					"presence_penalty": 0,
+					"model": "gpt-3.5-turbo"
+				});
+				console.log(data);
+				// A transitional statement after the request is made
+				await printMessage('Please wait...Relevant answers will be printed in the area below: \n\n');
+				await xhr.send(data);
+			}
+		</script>
 	</head>
+
 	<body>
-		hello world
+		<div class="page-loader">
+			<div class="loader">Loading...</div>
+		</div>
+		<header id="sticky-header">
+			<div class="header-area">
+				<div class="container sm-100">
+					<div class="row">
+						<div class="col-md-3 col-sm-2">
+							<div class="logo text-upper">
+								<h4>
+									<a href="javascript:history.back()">return</a>
+								</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="basic-portfolio-area ptb-10">
+			<div class="filter-menu text-center mb-40">
+				<h1>Cheetah-Chat</h1>
+				<img src="./img/chat-logo.png" width="100" height="100">
+				<h2>Your intelligent management assistant</h2>
+				<h4>Stand-alone tools are attached to the "Cheetah"</h4>
+			</div>
+			<div class="call-to-action-area gray-bg ptb-60">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-9 col-sm-9 col-xs-12">
+							<div class="form-group">
+								<label></label>
+								<textarea class="form-control" id="chat-gpt-input"
+									placeholder="Please enter what you would like to enquire about." rows="3"
+									style="width: 135%;resize:Vertical; margin: 0 auto; background-color: #ffffff; color: #333; border: 1px solid #ccc; border-radius: 15px;font-size: 25px;"></textarea>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-12">
+								<div class="call-to-action">
+									<button onclick="callCHATGPT()" autocomplete="off" class="btn btn-default" href="#"
+										style="background-color: #00695e; color: #f4f4f4; border-radius: 20px;font-size: 25px;">
+										<span class="spinner-border spinner-border-sm" role="status"
+											aria-hidden="true">INQUIRE</span></button>
+								</div>
+							</div>
+							<div class="col-md-9 col-sm-9 col-xs-12">
+								<div class="form-group">
+									<textarea class="form-control" id="chatgpt-response"
+										placeholder="Due to network problems, we need to wait, usually the longer the content, the longer the waiting time; if there is no response for a long time, please refresh the page and try again."
+										rows=13"
+										style="width: 151%;height: auto; margin: 0 auto;resize:Vertical;readonly = Ture; background-color: #ffffff; color: #333; border: 1px solid #ccc; border-radius: 10px; overflow: scroll;"
+										readonly="true"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<footer>
+					<h4 align="right">By Freferic.Liu——''<a href="https://github.com/FredericLCH">@Github</a> </h4>
+				</footer>
+			
 	</body>
+
 </html>
